@@ -6,16 +6,16 @@ import { Physics, useBox, usePlane, useSphere } from 'use-cannon'
 import niceColors from 'nice-color-palettes'
 import './styles.css'
 import { useConvexPolyhedron } from 'use-cannon';
-import { Octahedron } from 'drei';
 import D8 from './D8.js'
 import DiceOverview from './DiceOverview.js'
 
+import DiceSelection from './DiceSelection.js'
 
 
 
 ReactDOM.render(
   <>
-  <DiceOverview />
+  <DiceSelection />
   </>,
   document.getElementById('root')
 );

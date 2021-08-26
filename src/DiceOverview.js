@@ -8,14 +8,28 @@ import './styles.css'
 import { useConvexPolyhedron } from 'use-cannon';
 import { Octahedron } from 'drei';
 import D8 from './D8.js'
+import D4 from './D4.js'
+import D6 from './D6.js'
+import D10 from './D10.js'
+import D12 from './D12.js'
+import D20 from './D20.js'
+import {TestDice} from './TestDice.js'
 
+
+import CANNON from "cannon";
+
+
+import { DiceManager, DiceD20, DiceD6 } from "threejs-dice/lib/dice";
 
 
 const DiceOverview = (props) => {
+  const {setDiceObject, diceObject} = props;
+  console.log(diceObject, 'this should be functional')
+  console.log(props, 'these are props');
   var cheese;
-  console.log('trigger check');
+  // console.log('trigger check');
   const [dice, setDice] = useState([0]);
-  console.log(dice, 'something odd');
+  // console.log(dice, 'something odd');
   //radius and the rest are all passed in so likely radius adjusts these values.
 
   useEffect(() => {
@@ -24,10 +38,11 @@ const DiceOverview = (props) => {
 
 
   function Plane({ color, ...props }) {
-    const [ref] = usePlane(() => ({ ...props }))
+    const [ref, api] = usePlane(() => ({ ...props }))
+    console.log(api, 'this should be the api in the plane')
     return (
-      <mesh ref={ref} receiveShadow>
-        <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
+      <mesh ref={ref} receiveShadow onClick={() => console.log('hello')} >
+        <planeBufferGeometry onClick={() => api.applyImpulse([0, 20, 0], [0, 0, 0])} attach="geometry" args={[1000, 1000]} />
         <meshPhongMaterial attach="material" color={color} />
       </mesh>
     )
@@ -49,52 +64,51 @@ const DiceOverview = (props) => {
     )
   }
 
-  const addDice = () => {
-
-    // console.log(dice, 'what the');
-    // let newDice = dice;
-    // newDice.push(3);
-    // console.log(newDice);
-    // console.log(promise);
-    // promise.push(<D8 position={[2, 2, 10]} rotation={[0, 1, 0]} />)
-    // console.log(promise, 'new promise')
-    // setDice(newDice);
-
-
+  let dice4 = []
+  for (var i = 0; i<props.d4; i++) {
+    dice4.push(<D4 position={[2, 2, (5*(i+1))]} rotation={[0, 1, 0]} />)
   }
 
-  //   useEffect(() => {
-  //     var scene = new THREE.Scene();
-  //     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-  //     var renderer = new THREE.WebGLRenderer();
-  //     renderer.setSize( window.innerWidth, window.innerHeight );
-  //     // document.body.appendChild( renderer.domElement );
-  //     // use ref as a mount point of the Three.js scene instead of the document.body
-  //     cheese.appendChild( renderer.domElement );
-  //     var geometry = new THREE.OctahedronGeometry( 1 );
-  //     var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  //     var cube = new THREE.Mesh( geometry, material );
-  //     scene.add( cube );
-  //     camera.position.z = 5;
-  //     var animate = function () {
-  //       requestAnimationFrame( animate );
-  //       cube.rotation.x += 0.01;
-  //       cube.rotation.y += 0.01;
-  //       renderer.render( scene, camera );
-  //     };
-  //     animate();
+
+  let dice6 = []
+  for (var i = 0; i<props.d6; i++) {
+    dice6.push(<D6 position={[3, 3, (5*(i+1))]} rotation={[0, 1, 0]} />)
+  }
 
 
-  // }, []);
+  let dice8 = []
+  for (var i = 0; i<props.d8; i++) {
+    dice8.push(<D8 position={[1, 1, (5*(i+1))]} rotation={[0, 1, 0]} />)
+  }
+
+  let dice10 = []
+  for (var i = 0; i<props.d10; i++) {
+    console.log('pus')
+    dice10.push(<D10 position={[5, 5, (5*(i+1))]} rotation={[0, 1, 0]} />)
+  }
+
+  let dice12 = []
+  for (var i = 0; i<props.d12; i++) {
+    dice12.push(<D12 position={[6, 6, (5*(i+1))]} rotation={[0, 1, 0]} />)
+  }
+
+  let dice20 = []
+  for (var i = 0; i<props.d20; i++) {
+    dice20.push(<D20 position={[7, 7, (5*(i+1))]} rotation={[0, 1, 0]} />)
+  }
+
+
   const glProps = { alpha: false };
   const cameraProps = { position: [0, -12, 16] };
+  // let keys = Object.keys(props)
 
 
   return (
     <>
-      <button onClick={() => { addDice() }}>button</button>
+      <button onClick={() => { console.log('click') }}>button</button>
       <button>toss</button>
-      <div style={{ position: "relative", width: 300, height: 300 }}>
+      <TestDice />
+      <div style={{ position: "relative", width: 500, height: 500 }}>
         <Canvas concurrent shadowMap sRGB gl={glProps} camera={cameraProps} width={100}>
           <hemisphereLight intensity={0.35} />
           <spotLight position={[30, 0, 30]} angle={0.3} penumbra={1} intensity={2} castShadow shadow-mapSize-width={256} shadow-mapSize-height={256} />
@@ -106,8 +120,15 @@ const DiceOverview = (props) => {
             <Plane color={niceColors[10][2]} position={[6, 0, 0]} rotation={[0, -0.9, 0]} />
             <Plane color={niceColors[10][3]} position={[0, 6, 0]} rotation={[0.9, 0, 0]} />
             <Plane color={niceColors[10][0]} position={[0, -6, 0]} rotation={[-0.9, 0, 0]} />
-            <D8 position={[4, 2, 10]} rotation={[0, 1, 0]} />
-            <D8 position={[0, 0, 4]} rotation={[0, 1, 0]} />
+            {dice4}
+            {dice6}
+            {dice8}
+            {dice10}
+            {dice12}
+            {dice20}
+
+
+            {/* {promise} */}
             <Box />
           </Physics>
         </Canvas>

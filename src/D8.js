@@ -70,7 +70,7 @@ const D8 = (props) => {
     <Octahedron
       args={radius}
       ref={ref}
-      onClick={() => api.applyImpulse([0, 0, 50], [0, 0, 0])}
+      onClick={() => api.applyImpulse([0, 20, 50], [0, 0, 0])}
       castShadow
       receiveShadow
     >
